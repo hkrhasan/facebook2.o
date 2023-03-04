@@ -4,15 +4,17 @@ import { useNavigate } from "react-router-dom";
 
 function HomePage() {
   const { user } = useAuth();
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
-  useEffect(() => {
-    if (!user) {
-      navigate("/login");
-    }
-  }, [user]);
+  // useEffect(() => {
+  //   if (!user) {
+  //     navigate("/login");
+  //   }
+  // }, [user]);
 
-  return <div>HomePage</div>;
+  console.log({ user });
+
+  return <div>{JSON.stringify(user)}</div>;
 }
 
 export default HomePage;
