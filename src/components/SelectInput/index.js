@@ -1,9 +1,10 @@
 import React from "react";
 import clsx from "clsx";
 
-function SelectInput({ options, value, onChange }) {
+function SelectInput({ options, value, onChange, name }) {
   return (
     <select
+      name={name}
       value={value}
       onChange={onChange}
       className={clsx(

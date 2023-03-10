@@ -5,10 +5,25 @@ import { BsFillQuestionCircleFill } from "react-icons/bs";
 import clsx from "clsx";
 import Input from "../Input";
 import SelectInput from "../SelectInput";
+import SignUpRadio from "../SignUpRadio";
 
 export default function SignUpModal() {
   let [isOpen, setIsOpen] = useState(false);
   const [formData, setFormData] = useState({});
+  const months = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
 
   const onChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -22,6 +37,20 @@ export default function SignUpModal() {
     setIsOpen(true);
   }
 
+  function getYearOptions(currentYear) {
+    const options = [];
+
+    for (let i = parseInt(currentYear); i >= 1905; i--) {
+      options.push({
+        value: i, // 2023, 2022 ........ 1905
+        title: i,
+      });
+    }
+    return options;
+  }
+
+  console.log({ formData });
+
   return (
     <>
       <button
@@ -31,9 +60,6 @@ export default function SignUpModal() {
       >
         Create new account
       </button>
-      {/* <button className="bg-green-500 max-w-max text-white rounded-md py-3 px-4 font-bold">
-              Create new account
-            </button> */}
 
       <Transition appear show={isOpen} as={Fragment}>
         <Dialog as="div" className="relative z-10" onClose={closeModal}>
@@ -110,6 +136,7 @@ export default function SignUpModal() {
                         name="password"
                       />
                     </div>
+
                     <div>
                       <div className="grid gap-y-1">
                         <div className="flex items-center gap-x-2">
@@ -121,6 +148,8 @@ export default function SignUpModal() {
                         </div>
                         <div className="grid grid-cols-3 gap-x-3">
                           <SelectInput
+                            name="date"
+                            onChange={onChange}
                             options={[...Array(31).keys()].map((num) => {
                               return {
                                 value: num + 1,
@@ -129,23 +158,85 @@ export default function SignUpModal() {
                             })}
                           />
                           <SelectInput
-                            options={[...Array(31).keys()].map((num) => {
+                            name="month"
+                            onChange={onChange}
+                            options={months.map((month) => {
                               return {
-                                value: num + 1,
-                                title: num + 1,
+                                value: month,
+                                title: month,
                               };
                             })}
                           />
                           <SelectInput
-                            options={[...Array(31).keys()].map((num) => {
-                              return {
-                                value: num + 1,
-                                title: num + 1,
-                              };
-                            })}
+                            name="year"
+                            onChange={onChange}
+                            options={getYearOptions(new Date().getFullYear())}
                           />
                         </div>
                       </div>
+                    </div>
+
+                    <GenderRadioGroup
+                      gender={formData?.gender}
+                      setGender={(value) => {
+                        onChange({ target: { value, name: "gender" } });
+                      }}
+                    />
+                    {formData.gender === "custom" ? (
+                      <div>
+                        <div>
+                          <SelectInput
+                            name="wish"
+                            onChange={onChange}
+                            options={[
+                              {
+                                title: "She: wish her a happy birthday",
+                                value: "she",
+                              },
+                              {
+                                title: "He: wish him a happy birthday",
+                                value: "he",
+                              },
+                              {
+                                title: "They: wish them a happy birthday",
+                                value: "they",
+                              },
+                            ]}
+                          />
+                          <p className="text-sm">
+                            Your pronoun is visible to everyone.
+                          </p>
+                        </div>
+                        <div>
+                          <Input
+                            type="text"
+                            placeholder="Gender (optional)"
+                            onChange={onChange}
+                            value={formData?.ifCustomGender}
+                            name="ifCustomGender"
+                          />
+                        </div>
+                      </div>
+                    ) : null}
+                    <div className="grid gap-y-4">
+                      <p className="text-xs">
+                        People who use our service may have uploaded your
+                        contact information to Facebook. Learn more.
+                      </p>
+                      <p className="text-xs">
+                        By clicking Sign Up, you agree to our Terms, Privacy
+                        Policy and Cookies Policy. You may receive SMS
+                        notifications from us and can opt out at any time.
+                      </p>
+                    </div>
+                    <div className="flex justify-center mb-6">
+                      <button
+                        type="button"
+                        onClick={() => {}}
+                        className="bg-green-500 w-52 text-white rounded-md py-2 px-4 font-bold"
+                      >
+                        Sign Up
+                      </button>
                     </div>
                   </div>
                 </Dialog.Panel>
@@ -155,5 +246,38 @@ export default function SignUpModal() {
         </Dialog>
       </Transition>
     </>
+  );
+}
+
+function GenderRadioGroup({ gender, setGender }) {
+  return (
+    <div>
+      <div className="grid gap-y-1">
+        <div className="flex items-center gap-x-2">
+          <h5 className="text-sm">Gender</h5>
+          <BsFillQuestionCircleFill size={12} className="text-gray-500" />
+        </div>
+        <div className="grid grid-cols-3 gap-x-3">
+          <SignUpRadio
+            title="Female"
+            name="gender"
+            onClick={() => setGender("female")}
+            selected={gender === "female"}
+          />
+          <SignUpRadio
+            title="male"
+            name="gender"
+            onClick={() => setGender("male")}
+            selected={gender === "male"}
+          />
+          <SignUpRadio
+            title="Custom"
+            name="gender"
+            onClick={() => setGender("custom")}
+            selected={gender === "custom"}
+          />
+        </div>
+      </div>
+    </div>
   );
 }
