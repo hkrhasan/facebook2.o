@@ -66,7 +66,7 @@ function LoginPage() {
                 type="text"
                 name="email"
                 className={clsx(
-                  "px-4 py-[16px]",
+                  "px-4 py-4",
                   errors.includes("email") &&
                     "focus-visible:outline-red-500 border-red-500"
                 )}
@@ -85,7 +85,7 @@ function LoginPage() {
                 type="password"
                 name="password"
                 className={clsx(
-                  "px-4 py-[16px]",
+                  "px-4 py-4",
                   errors.includes("email") &&
                     "focus-visible:outline-red-500 border-red-500"
                 )}

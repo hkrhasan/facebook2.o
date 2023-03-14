@@ -9,7 +9,9 @@ import SignUpRadio from "../SignUpRadio";
 
 export default function SignUpModal() {
   let [isOpen, setIsOpen] = useState(false);
-  const [formData, setFormData] = useState({});
+  const [formData, setFormData] = useState({
+    
+  });
   const months = [
     "Jan",
     "Feb",
@@ -183,8 +185,8 @@ export default function SignUpModal() {
                       }}
                     />
                     {formData.gender === "custom" ? (
-                      <div>
-                        <div>
+                      <div className="grid gap-y-2">
+                        <div className="grid gap-y-2">
                           <SelectInput
                             name="wish"
                             onChange={onChange}
