@@ -1,8 +1,8 @@
 import * as Tooltip from "@radix-ui/react-tooltip";
 
-function TooltipComp({ title, children }) {
+function TooltipComp({ title, children, ...props }) {
   return (
-    <Tooltip.Provider>
+    <Tooltip.Provider {...props}>
       <Tooltip.Root>
         <Tooltip.Trigger asChild>{children}</Tooltip.Trigger>
         <Tooltip.Portal>

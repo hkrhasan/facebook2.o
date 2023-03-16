@@ -1,8 +1,15 @@
 import React from "react";
+import clsx from "clsx";
 
-function Avatar({ src, width }) {
+function Avatar({ src, width, className, enableBorder }) {
   return (
-    <div className="rounded-full overflow-hidden">
+    <div
+      className={clsx(
+        "rounded-full overflow-hidden",
+        className,
+        enableBorder && "border-[4px] border-blue-500"
+      )}
+    >
       <img src={src} width={width || "43px"} />
     </div>
   );
