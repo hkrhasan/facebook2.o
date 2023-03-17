@@ -1,4 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, {
+  Component,
+  PureComponent,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import useAuth from "../../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import { Avatar, Header, SidebarRow, TabBar, WhiteBox } from "../../components";
@@ -88,6 +94,9 @@ function HomePage() {
 export default HomePage;
 
 function MidColHeader() {
+  const topRowRef = useRef(null);
+  const [topRowScrollValue, setTopRowScrollValue] = useState(0);
+
   const tabs = [
     {
       id: "stories",
@@ -102,6 +111,17 @@ function MidColHeader() {
   ];
 
   const [tab, setTab] = useState(tabs[0]);
+
+  useEffect(() => {
+    const onScroll = (e) => {
+      setTopRowScrollValue(e.target.scrollLeft);
+    };
+    // clean up code
+    topRowRef?.current?.removeEventListener("scroll", onScroll);
+    topRowRef?.current?.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   return (
     <WhiteBox>
       <div className="px-4 pt-1 border-b-[1px] pb-2">
@@ -113,8 +133,11 @@ function MidColHeader() {
           onTabClick={(tab) => setTab(tab)}
         />
       </div>
-      <div className="py-5">
-        <div className="flex items-center gap-x-3 overflow-x-scroll w-full hide-scrollbar">
+      <div className="py-5 relative">
+        <div
+          ref={topRowRef}
+          className="flex items-center gap-x-3 overflow-x-scroll w-full hide-scrollbar px-4 scroll-smooth"
+        >
           <ImageCard img={testImage} />
           <ImageCard img={testImage} />
           <ImageCard img={testImage} />
@@ -123,6 +146,22 @@ function MidColHeader() {
           <ImageCard img={testImage} />
           <ImageCard img={testImage} />
           <ImageCard img={testImage} />
+          {topRowScrollValue > 0 ? (
+            <div
+              className="absolute bg-white h-16 w-16 cursor-pointer rounded-full top-2/4 left-8"
+              onClick={() => {
+                topRowRef.current.scrollLeft -= 1000;
+              }}
+            ></div>
+          ) : null}
+          {topRowScrollValue !== topRowRef?.current?.scrollWidth ? (
+            <div
+              className="absolute bg-white h-16 w-16 cursor-pointer rounded-full top-2/4 right-8"
+              onClick={() => {
+                topRowRef.current.scrollLeft += 1000;
+              }}
+            ></div>
+          ) : null}
         </div>
       </div>
     </WhiteBox>
