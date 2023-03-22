@@ -26,14 +26,9 @@ import {
   MostRecent,
   Watch,
 } from "../../assets/facebookicons";
+import { useDispatch, useSelector } from "react-redux";
 
 const leftSideBarMenus = [
-  {
-    id: "profile",
-    title: "Talib Hasan",
-    img: avatar,
-    as: "profile",
-  },
   {
     id: "friends",
     title: "Friends",
@@ -67,12 +62,27 @@ const leftSideBarMenus = [
 ];
 
 function HomePage() {
-  const { user } = useAuth();
+  const [sideBarMenus, setSideBarMenus] = useState(leftSideBarMenus);
   const navigate = useNavigate();
+  const user = useSelector((state) => state.user);
 
   useEffect(() => {
-    if (!user) {
-      navigate("/login");
+    const withoutProfileMenus = sideBarMenus.filter(
+      (menu) => menu.id !== "profile"
+    );
+
+    if (user) {
+      setSideBarMenus([
+        {
+          id: "profile",
+          title: user.name,
+          img: avatar,
+          as: "profile",
+        },
+        ...withoutProfileMenus,
+      ]);
+    } else {
+      setSideBarMenus(withoutProfileMenus);
     }
   }, [user]);
 
@@ -85,7 +95,7 @@ function HomePage() {
       >
         {/* Left col */}
         <div className="overflow-y-scroll">
-          {leftSideBarMenus.map((menu) => (
+          {sideBarMenus.map((menu) => (
             <SidebarRow key={`left-side-menu-${menu.id}`} {...menu} />
           ))}
         </div>
@@ -94,6 +104,7 @@ function HomePage() {
           <div className="grid gap-y-5 w-[700px]">
             <StoryController />
             <PostController />
+            <UserUpdateComp />
           </div>
         </div>
         {/* Right col */}
@@ -106,3 +117,17 @@ function HomePage() {
 }
 
 export default HomePage;
+
+function UserUpdateComp() {
+  const dispatch = useDispatch();
+
+  function onChange(e) {
+    dispatch({ type: "user/update", payload: { name: e.target.value } });
+  }
+
+  return (
+    <div>
+      <input type="text" onChange={onChange} />
+    </div>
+  );
+}
