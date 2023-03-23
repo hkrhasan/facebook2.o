@@ -16,8 +16,15 @@ import {
   StoryController,
   PostController,
   SidebarHeadingRow,
+  PreLoader,
 } from "../../components";
 import avatar from "../../assets/profile.jpeg";
+import {
+  SET_USER,
+  LOGOUT,
+  SET_LOADING,
+  selectUser,
+} from "../../store/reducers/user.reducer";
 
 import {
   Friends,
@@ -64,7 +71,7 @@ const leftSideBarMenus = [
 function HomePage() {
   const [sideBarMenus, setSideBarMenus] = useState(leftSideBarMenus);
   const navigate = useNavigate();
-  const user = useSelector((state) => state.user);
+  const { user, isLoading } = useSelector(selectUser);
 
   useEffect(() => {
     const withoutProfileMenus = sideBarMenus.filter(
@@ -82,9 +89,11 @@ function HomePage() {
         ...withoutProfileMenus,
       ]);
     } else {
-      setSideBarMenus(withoutProfileMenus);
+      navigate("/login");
     }
   }, [user]);
+
+  if (isLoading) return <PreLoader />;
 
   return (
     <div className="h-screen w-full bg-[#f0f2f5]">
@@ -104,7 +113,6 @@ function HomePage() {
           <div className="grid gap-y-5 w-[700px]">
             <StoryController />
             <PostController />
-            <UserUpdateComp />
           </div>
         </div>
         {/* Right col */}
@@ -117,17 +125,3 @@ function HomePage() {
 }
 
 export default HomePage;
-
-function UserUpdateComp() {
-  const dispatch = useDispatch();
-
-  function onChange(e) {
-    dispatch({ type: "user/update", payload: { name: e.target.value } });
-  }
-
-  return (
-    <div>
-      <input type="text" onChange={onChange} />
-    </div>
-  );
-}

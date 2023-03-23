@@ -1,5 +1,6 @@
 const initialState = "light";
 
+
 export default function themReducer(state = initialState, action) {
   switch (action.type) {
     case "theme/toggle":
