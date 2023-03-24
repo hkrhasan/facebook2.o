@@ -49,18 +49,6 @@ function LoginPage() {
         <div className="bg-white shadow-lg grid gap-y-6 rounded-md p-5">
           <form className="grid gap-y-6" onSubmit={onSubmit}>
             <div className="w-full">
-              {/* <input
-                value={formData.email}
-                type="text"
-                name="email"
-                className={clsx(
-                  "w-full border-2 border-gray-200 rounded-md p-4 focus-visible:outline-blue-500",
-                  errors.includes("email") &&
-                    "focus-visible:outline-red-500 border-red-500"
-                )}
-                placeholder="Email Address or phone number"
-                onChange={onChange}
-              /> */}
               <Input
                 value={formData.email}
                 type="text"

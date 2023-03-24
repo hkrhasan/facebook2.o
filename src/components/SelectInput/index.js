@@ -1,14 +1,15 @@
 import React from "react";
 import clsx from "clsx";
 
-function SelectInput({ options, value, onChange, name }) {
+function SelectInput({ options, value, onChange, name, className }) {
   return (
     <select
       name={name}
       value={value}
       onChange={onChange}
       className={clsx(
-        "w-full border-2 border-gray-200 rounded-md py-[6px] px-2"
+        "w-full border-2 border-gray-200 rounded-md py-[6px] px-2",
+        className
       )}
     >
       {options?.map((option) => (

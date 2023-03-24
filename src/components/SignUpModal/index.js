@@ -6,28 +6,51 @@ import clsx from "clsx";
 import Input from "../Input";
 import SelectInput from "../SelectInput";
 import SignUpRadio from "../SignUpRadio";
+import { addDocument } from "../../firebase";
+import { toast } from "react-hot-toast";
+
+const months = [
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
+];
+
+const currentDate = new Date();
+
+const initialData = {
+  day: `${currentDate.getDate()}`,
+  month: `${months[currentDate.getMonth()]}`,
+  year: `${currentDate.getFullYear()}`,
+  firstName: "",
+  gender: null,
+  surName: "",
+  password: "",
+  email: "",
+};
 
 export default function SignUpModal() {
   let [isOpen, setIsOpen] = useState(false);
-  const [formData, setFormData] = useState({
-    
-  });
-  const months = [
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
-    "May",
-    "Jun",
-    "Jul",
-    "Aug",
-    "Sep",
-    "Oct",
-    "Nov",
-    "Dec",
-  ];
+  const [errorFields, setErrorFields] = useState([]);
+  const [formData, setFormData] = useState(initialData);
 
   const onChange = (e) => {
+    if (errorFields.length) {
+      const updatedErrorFields = errorFields.filter(
+        (field) => field !== e.target.name
+      );
+
+      setErrorFields(updatedErrorFields);
+    }
+
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
@@ -51,7 +74,35 @@ export default function SignUpModal() {
     return options;
   }
 
-  console.log({ formData });
+  async function onSubmit(e) {
+    e.preventDefault();
+    const fields = Object.keys(formData);
+
+    const errorFields = fields.filter((field) => !formData[field]);
+
+    if (errorFields.length) {
+      console.log(errorFields);
+      setErrorFields(errorFields);
+      return;
+    }
+
+    const { day, month, year, ...rest } = formData;
+
+    // addDocument in firebase
+    const { success, id, error } = await addDocument("users", {
+      dob: `${day}-${month}-${year}`,
+      ...rest,
+    });
+
+    if (!success) {
+      toast.error("something went wrong on user creation");
+      return;
+    }
+
+    toast.success(`user created successfully with id ${id}`);
+    setIsOpen(false);
+    setFormData(initialData);
+  }
 
   return (
     <>
@@ -105,7 +156,7 @@ export default function SignUpModal() {
                     <p className="text-base">It's quick and easy.</p>
                   </div>
                   <hr />
-                  <div className="grid gap-y-3 p-4">
+                  <form onSubmit={onSubmit} className="grid gap-y-3 p-4">
                     <div className="grid gap-y-3">
                       <div className="grid grid-cols-2 gap-x-4">
                         <Input
@@ -114,6 +165,10 @@ export default function SignUpModal() {
                           onChange={onChange}
                           value={formData.firstName}
                           name="firstName"
+                          className={clsx(
+                            errorFields.includes("firstName") &&
+                              "border-red-500 text-red-500 placeholder:text-red-500"
+                          )}
                         />
                         <Input
                           type="text"
@@ -121,6 +176,10 @@ export default function SignUpModal() {
                           onChange={onChange}
                           value={formData.surName}
                           name="surName"
+                          className={clsx(
+                            errorFields.includes("surName") &&
+                              "border-red-500 text-red-500 placeholder:text-red-500"
+                          )}
                         />
                       </div>
                       <Input
@@ -129,6 +188,10 @@ export default function SignUpModal() {
                         onChange={onChange}
                         value={formData.email}
                         name="email"
+                        className={clsx(
+                          errorFields.includes("email") &&
+                            "border-red-500 text-red-500 placeholder:text-red-500"
+                        )}
                       />
                       <Input
                         type="password"
@@ -136,6 +199,10 @@ export default function SignUpModal() {
                         onChange={onChange}
                         value={formData.password}
                         name="password"
+                        className={clsx(
+                          errorFields.includes("password") &&
+                            "border-red-500 text-red-500 placeholder:text-red-500"
+                        )}
                       />
                     </div>
 
@@ -150,7 +217,8 @@ export default function SignUpModal() {
                         </div>
                         <div className="grid grid-cols-3 gap-x-3">
                           <SelectInput
-                            name="date"
+                            name="day"
+                            value={formData.day}
                             onChange={onChange}
                             options={[...Array(31).keys()].map((num) => {
                               return {
@@ -158,21 +226,32 @@ export default function SignUpModal() {
                                 title: num + 1,
                               };
                             })}
+                            className={clsx(
+                              errorFields.includes("day") && "border-red-500"
+                            )}
                           />
                           <SelectInput
                             name="month"
                             onChange={onChange}
+                            value={formData.month}
                             options={months.map((month) => {
                               return {
                                 value: month,
                                 title: month,
                               };
                             })}
+                            className={clsx(
+                              errorFields.includes("month") && "border-red-500"
+                            )}
                           />
                           <SelectInput
                             name="year"
                             onChange={onChange}
+                            value={formData.year}
                             options={getYearOptions(new Date().getFullYear())}
+                            className={clsx(
+                              errorFields.includes("year") && "border-red-500"
+                            )}
                           />
                         </div>
                       </div>
@@ -183,6 +262,7 @@ export default function SignUpModal() {
                       setGender={(value) => {
                         onChange({ target: { value, name: "gender" } });
                       }}
+                      isError={errorFields.includes("gender")}
                     />
                     {formData.gender === "custom" ? (
                       <div className="grid gap-y-2">
@@ -233,14 +313,14 @@ export default function SignUpModal() {
                     </div>
                     <div className="flex justify-center mb-6">
                       <button
-                        type="button"
+                        type="submit"
                         onClick={() => {}}
                         className="bg-green-500 w-52 text-white rounded-md py-2 px-4 font-bold"
                       >
                         Sign Up
                       </button>
                     </div>
-                  </div>
+                  </form>
                 </Dialog.Panel>
               </Transition.Child>
             </div>
@@ -251,7 +331,8 @@ export default function SignUpModal() {
   );
 }
 
-function GenderRadioGroup({ gender, setGender }) {
+function GenderRadioGroup({ gender, setGender, isError }) {
+  const errorClass = isError && "border-red-500 text-red-500";
   return (
     <div>
       <div className="grid gap-y-1">
@@ -265,18 +346,21 @@ function GenderRadioGroup({ gender, setGender }) {
             name="gender"
             onClick={() => setGender("female")}
             selected={gender === "female"}
+            className={clsx(errorClass)}
           />
           <SignUpRadio
             title="male"
             name="gender"
             onClick={() => setGender("male")}
             selected={gender === "male"}
+            className={clsx(errorClass)}
           />
           <SignUpRadio
             title="Custom"
             name="gender"
             onClick={() => setGender("custom")}
             selected={gender === "custom"}
+            className={clsx(errorClass)}
           />
         </div>
       </div>

@@ -9,7 +9,7 @@ function Input({ type, value, onChange, className, placeholder, ...props }) {
       value={value}
       onChange={onChange}
       className={clsx(
-        "w-full border-2 border-gray-200 rounded-md py-[6px] px-2",
+        "w-full border-2 border-gray-200 rounded-md px-2",
         className
       )}
       {...props}
