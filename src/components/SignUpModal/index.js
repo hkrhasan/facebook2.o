@@ -41,6 +41,7 @@ export default function SignUpModal() {
   let [isOpen, setIsOpen] = useState(false);
   const [errorFields, setErrorFields] = useState([]);
   const [formData, setFormData] = useState(initialData);
+  const [isLoading, setIsLoading] = useState(false);
 
   const onChange = (e) => {
     if (errorFields.length) {
@@ -76,6 +77,7 @@ export default function SignUpModal() {
 
   async function onSubmit(e) {
     e.preventDefault();
+    setIsLoading(true);
     const fields = Object.keys(formData);
 
     const errorFields = fields.filter((field) => !formData[field]);
@@ -83,16 +85,18 @@ export default function SignUpModal() {
     if (errorFields.length) {
       console.log(errorFields);
       setErrorFields(errorFields);
+      setIsLoading(false);
       return;
     }
 
     const { day, month, year, ...rest } = formData;
 
     // addDocument in firebase
-    const { success, id, error } = await addDocument("users", {
+    const { success, id, error } = await addDocument("user1", {
       dob: `${day}-${month}-${year}`,
       ...rest,
     });
+    setIsLoading(false);
 
     if (!success) {
       toast.error("something went wrong on user creation");
@@ -317,7 +321,7 @@ export default function SignUpModal() {
                         onClick={() => {}}
                         className="bg-green-500 w-52 text-white rounded-md py-2 px-4 font-bold"
                       >
-                        Sign Up
+                        {isLoading ? "Loading..." : "Sign Up"}
                       </button>
                     </div>
                   </form>
