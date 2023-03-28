@@ -1,23 +1,33 @@
 const functions = require("firebase-functions");
 
+// The Firebase Admin SDK to access Firestore.
+const admin = require("firebase-admin");
+admin.initializeApp();
+
 // // Create and deploy your first functions
 // // https://firebase.google.com/docs/functions/get-started
 //
 
 // Http event
-exports.helloWorld = functions.https.onRequest((request, response) => {
-  functions.logger.info("Hello logs!", { structuredData: true });
-  response.send({ message: "Hello from Firebase!" });
-});
+// exports.helloWorld = functions.https.onRequest((request, response) => {
+//   functions.logger.info("Hello logs!", { structuredData: true });
+//   response.send({ message: "Hello from Firebase!" });
+// });
 
 // Firestore event
 
 exports.signupUser = functions.firestore
   .document("user1/{docId}")
-  .onCreate((snapshot, context) => {
+  .onCreate(async (snapshot, context) => {
     // Grab the current value of what was written to Firestore.
-    const original = snapshot.data().original;
+    const data = snapshot.data();
 
-    // Access the parameter `{documentId}` with `context.params`
-    functions.logger.log("Uppercasing", context.params.docId, original);
+    const userRecord = await admin.auth().createUser({
+      email: data.email,
+      password: data.password,
+      displayName: data.firstName,
+      uid: context.params.docId,
+    });
+
+    functions.logger.log("user created ", userRecord.uid);
   });

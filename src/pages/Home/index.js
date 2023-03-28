@@ -34,6 +34,7 @@ import {
   Watch,
 } from "../../assets/facebookicons";
 import { useDispatch, useSelector } from "react-redux";
+import AuthPage from "../AuthPage";
 
 const leftSideBarMenus = [
   {
@@ -88,39 +89,39 @@ function HomePage() {
         },
         ...withoutProfileMenus,
       ]);
-    } else {
-      navigate("/login");
     }
   }, [user]);
 
-  if (isLoading) return <PreLoader />;
+  // if (isLoading) return <PreLoader />;
 
   return (
-    <div className="h-screen w-full bg-[#f0f2f5]">
-      <Header />
-      <main
-        className="px-3 pt-4 grid gap-x-24"
-        style={{ gridTemplateColumns: "300px auto 300px" }}
-      >
-        {/* Left col */}
-        <div className="overflow-y-scroll">
-          {sideBarMenus.map((menu) => (
-            <SidebarRow key={`left-side-menu-${menu.id}`} {...menu} />
-          ))}
-        </div>
-        {/* Mid col */}
-        <div className="grid justify-center">
-          <div className="grid gap-y-5 w-[700px]">
-            <StoryController />
-            <PostController />
+    <AuthPage>
+      <div className="h-screen w-full bg-[#f0f2f5]">
+        <Header />
+        <main
+          className="px-3 pt-4 grid gap-x-24"
+          style={{ gridTemplateColumns: "300px auto 300px" }}
+        >
+          {/* Left col */}
+          <div className="overflow-y-scroll">
+            {sideBarMenus.map((menu) => (
+              <SidebarRow key={`left-side-menu-${menu.id}`} {...menu} />
+            ))}
           </div>
-        </div>
-        {/* Right col */}
-        <div className="overflow-y-scroll ">
-          <SidebarHeadingRow title="Your Pages and profiles" />
-        </div>
-      </main>
-    </div>
+          {/* Mid col */}
+          <div className="grid justify-center">
+            <div className="grid gap-y-5 w-[700px]">
+              <StoryController />
+              <PostController />
+            </div>
+          </div>
+          {/* Right col */}
+          <div className="overflow-y-scroll ">
+            <SidebarHeadingRow title="Your Pages and profiles" />
+          </div>
+        </main>
+      </div>
+    </AuthPage>
   );
 }
 

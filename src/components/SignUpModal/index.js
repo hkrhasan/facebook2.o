@@ -6,7 +6,7 @@ import clsx from "clsx";
 import Input from "../Input";
 import SelectInput from "../SelectInput";
 import SignUpRadio from "../SignUpRadio";
-import { addDocument } from "../../firebase";
+import { addDocument, addDocumentWithDocId } from "../../firebase";
 import { toast } from "react-hot-toast";
 
 const months = [
@@ -92,14 +92,18 @@ export default function SignUpModal() {
     const { day, month, year, ...rest } = formData;
 
     // addDocument in firebase
-    const { success, id, error } = await addDocument("user1", {
-      dob: `${day}-${month}-${year}`,
-      ...rest,
-    });
+    const { success, id, error } = await addDocumentWithDocId(
+      "user1",
+      {
+        dob: `${day}-${month}-${year}`,
+        ...rest,
+      },
+      rest.email.replace(/\./g, ",")
+    );
     setIsLoading(false);
 
     if (!success) {
-      toast.error("something went wrong on user creation");
+      toast.error(error);
       return;
     }
 
