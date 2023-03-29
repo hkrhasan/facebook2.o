@@ -1,7 +1,7 @@
 import CircleIcon from "../CircleIcon";
 import clsx from "clsx";
 import avatar from "../../assets/profile.jpeg";
-import { Tooltip, Avatar } from "..";
+import { Tooltip, Avatar, UserMenuAvatar } from "..";
 
 function RightMenu({ menus }) {
   return (
@@ -10,7 +10,7 @@ function RightMenu({ menus }) {
         <CircleIcon key={`menu-${menu.id}`} {...menu} />
       ))}
       <Tooltip title="Account">
-        <Avatar src={avatar} />
+        <UserMenuAvatar />
       </Tooltip>
     </div>
   );

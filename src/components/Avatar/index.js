@@ -1,4 +1,5 @@
 import React from "react";
+import DefaultAvatarSrc from "../../assets/default-avatar.png";
 import clsx from "clsx";
 
 function Avatar({ src, width, className, enableBorder }) {
@@ -10,7 +11,7 @@ function Avatar({ src, width, className, enableBorder }) {
         enableBorder && "border-[4px] border-blue-500"
       )}
     >
-      <img src={src} width={width || "43px"} />
+      <img src={src || DefaultAvatarSrc} width={width || "43px"} />
     </div>
   );
 }

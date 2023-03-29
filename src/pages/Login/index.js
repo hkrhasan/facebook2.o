@@ -12,6 +12,7 @@ import { SET_USER } from "../../store/reducers/user.reducer";
 function LoginPage() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -24,6 +25,8 @@ function LoginPage() {
 
   const onSubmit = async (e) => {
     e.preventDefault();
+    if (isLoading) return;
+    setIsLoading(true);
     const { email, password } = formData;
 
     // Validation start here
@@ -40,11 +43,13 @@ function LoginPage() {
       setTimeout(() => {
         setErrors([]);
       }, 5000);
+      setIsLoading(false);
       return;
     }
     // Validation end here
     const { success, user, error } = await SignIn(email, password);
 
+    setIsLoading(false);
     if (!success) {
       toast.error(error);
       return;
@@ -106,7 +111,7 @@ function LoginPage() {
               </div>
               <input
                 type="submit"
-                value="Log in"
+                value={isLoading ? "Loading..." : "Log in"}
                 className="bg-blue-500 p-3 rounded-md text-white font-bold text-xl cursor-pointer hover:bg-blue-600 transition delay-150 ease-in-out duration-300"
               />
             </form>

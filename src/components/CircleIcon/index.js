@@ -1,13 +1,21 @@
 import clsx from "clsx";
 import { Tooltip } from "../";
 
-function CircleIcon({ id, title, Icon, className }) {
+function CircleIcon({ id, title, Icon, className, iconSize }) {
+  if (title) {
+    return (
+      <Tooltip title={title}>
+        <div className={clsx("rounded-full p-3 bg-[#f0f2f5]", className)}>
+          <Icon size={iconSize || 20} />
+        </div>
+      </Tooltip>
+    );
+  }
+
   return (
-    <Tooltip title={title}>
-      <div className={clsx("rounded-full p-3 bg-[#f0f2f5]", className)}>
-        <Icon size={20} />
-      </div>
-    </Tooltip>
+    <div className={clsx("rounded-full p-3 bg-[#bcbcbc]", className)}>
+      <Icon size={iconSize || 20} />
+    </div>
   );
 }
 

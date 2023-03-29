@@ -83,8 +83,8 @@ function HomePage() {
       setSideBarMenus([
         {
           id: "profile",
-          title: user.name,
-          img: avatar,
+          title: user?.displayName,
+          img: user?.image,
           as: "profile",
         },
         ...withoutProfileMenus,

@@ -10,6 +10,9 @@ import {
   doc,
 } from "firebase/firestore";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+
+
+
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -52,7 +55,7 @@ export async function addDocumentWithDocId(collectionName, data, docId) {
 
     if (docSnapShot.exists()) {
       console.log("document already exist");
-      throw new Error(`document already exist with this ${docId}`);
+      throw new Error(`already exist with this ${docId}`);
       return;
     }
 
