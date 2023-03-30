@@ -1,5 +1,5 @@
 import React from "react";
-import { Avatar, WhiteBox } from "../";
+import { Avatar, PostModal, WhiteBox } from "../";
 import testImage from "../../assets/profile.jpeg";
 import feelingImg from "../../assets/facebookicons/feeling.png";
 import videoImg from "../../assets/facebookicons/video.png";
@@ -11,9 +11,7 @@ const PostController = () => {
       <div className="px-3">
         <div className="flex items-center gap-x-2 py-3 border-b-[1px]">
           <Avatar src={testImage} />
-          <div className="rounded-full bg-[#f0f2f5] px-3 py-2 hover:bg-[#e1e0e0] w-full">
-            <p>What's on your mind, Talib?</p>
-          </div>
+          <PostModal />
         </div>
         <div className="flex items-center justify-between py-2">
           <ActionButton title="Live Video" img={videoImg} />

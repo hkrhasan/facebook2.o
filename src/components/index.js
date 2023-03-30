@@ -16,3 +16,5 @@ export { default as StoryController } from "./StoryController";
 export { default as PostController } from "./PostController";
 export { default as PreLoader } from "./PreLoader";
 export { default as UserMenuAvatar } from "./UserMenuAvatar";
+export { default as PostModal } from "./PostModal";
+export { default as Modal } from "./Modal";
