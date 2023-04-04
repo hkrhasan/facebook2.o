@@ -9,9 +9,7 @@ function RightMenu({ menus }) {
       {menus.map((menu) => (
         <CircleIcon key={`menu-${menu.id}`} {...menu} />
       ))}
-      <Tooltip title="Account">
-        <UserMenuAvatar />
-      </Tooltip>
+      <UserMenuAvatar tooltipTitle="Account" />
     </div>
   );
 }

@@ -67,6 +67,126 @@ const leftSideBarMenus = [
     img: Watch,
     as: "menu",
   },
+  {
+    id: "friends",
+    title: "Friends",
+    img: Friends,
+    as: "menu",
+  },
+  {
+    id: "mostRecent",
+    title: "MostRecent",
+    img: MostRecent,
+    as: "menu",
+  },
+  {
+    id: "groups",
+    title: "Groups",
+    img: Groups,
+    as: "menu",
+  },
+  {
+    id: "marketPlace",
+    title: "MarketPlace",
+    img: MarketPlace,
+    as: "menu",
+  },
+  {
+    id: "watch",
+    title: "Watch",
+    img: Watch,
+    as: "menu",
+  },
+  {
+    id: "friends",
+    title: "Friends",
+    img: Friends,
+    as: "menu",
+  },
+  {
+    id: "mostRecent",
+    title: "MostRecent",
+    img: MostRecent,
+    as: "menu",
+  },
+  {
+    id: "groups",
+    title: "Groups",
+    img: Groups,
+    as: "menu",
+  },
+  {
+    id: "marketPlace",
+    title: "MarketPlace",
+    img: MarketPlace,
+    as: "menu",
+  },
+  {
+    id: "watch",
+    title: "Watch",
+    img: Watch,
+    as: "menu",
+  },
+  {
+    id: "friends",
+    title: "Friends",
+    img: Friends,
+    as: "menu",
+  },
+  {
+    id: "mostRecent",
+    title: "MostRecent",
+    img: MostRecent,
+    as: "menu",
+  },
+  {
+    id: "groups",
+    title: "Groups",
+    img: Groups,
+    as: "menu",
+  },
+  {
+    id: "marketPlace",
+    title: "MarketPlace",
+    img: MarketPlace,
+    as: "menu",
+  },
+  {
+    id: "watch",
+    title: "Watch",
+    img: Watch,
+    as: "menu",
+  },
+  {
+    id: "friends",
+    title: "Friends",
+    img: Friends,
+    as: "menu",
+  },
+  {
+    id: "mostRecent",
+    title: "MostRecent",
+    img: MostRecent,
+    as: "menu",
+  },
+  {
+    id: "groups",
+    title: "Groups",
+    img: Groups,
+    as: "menu",
+  },
+  {
+    id: "marketPlace",
+    title: "MarketPlace",
+    img: MarketPlace,
+    as: "menu",
+  },
+  {
+    id: "watch",
+    title: "Watch",
+    img: Watch,
+    as: "menu",
+  },
 ];
 
 function HomePage() {
@@ -96,14 +216,14 @@ function HomePage() {
 
   return (
     <AuthPage>
-      <div className="h-screen w-full bg-[#f0f2f5]">
+      <div className="h-screen w-full bg-[#f0f2f5] overflow-hidden">
         <Header />
         <main
-          className="px-3 pt-4 grid gap-x-24"
+          className="px-3 py-4 grid gap-x-24 items-start h-[calc(100vh-4rem)]"
           style={{ gridTemplateColumns: "300px auto 300px" }}
         >
           {/* Left col */}
-          <div className="overflow-y-scroll">
+          <div className="h-[calc(100vh-4rem)] overflow-y-scroll pb-2">
             {sideBarMenus.map((menu) => (
               <SidebarRow key={`left-side-menu-${menu.id}`} {...menu} />
             ))}

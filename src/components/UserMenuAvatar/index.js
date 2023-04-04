@@ -16,7 +16,7 @@ export default function UserMenuAvatar() {
       <Menu as="div" className="relative inline-block text-left">
         <div>
           <Menu.Button>
-            <Avatar src={user?.image} />
+            <Avatar src={user?.image} tooltipTitle="Account" />
           </Menu.Button>
         </div>
         <Transition
