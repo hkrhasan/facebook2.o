@@ -1,6 +1,7 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
+
 import {
   getFirestore,
   addDoc,
@@ -14,6 +15,12 @@ import {
   signInWithEmailAndPassword,
   sendPasswordResetEmail,
 } from "firebase/auth";
+import {
+  ref,
+  getDownloadURL,
+  uploadBytesResumable,
+  getStorage,
+} from "firebase/storage";
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -38,6 +45,7 @@ const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 const db = getFirestore(app);
 const auth = getAuth(app);
+const storage = getStorage(app);
 
 export async function addDocument(collectionName, data) {
   try {
@@ -97,5 +105,39 @@ export async function ResetPassword(email) {
     const errorCode = error.code;
     const errorMessage = error.message;
     return { success: false, error: errorMessage };
+  }
+}
+
+export async function uploadFile(file, setUrl, setError, setProgress) {
+  try {
+    const storageRef = ref(
+      storage,
+      `posts/${new Date().valueOf()}-${file.name}`
+    );
+    const uploadTask = uploadBytesResumable(storageRef, file);
+
+    uploadTask.on(
+      "state_changed",
+      (snapshot) => {
+        const progress = Math.round(
+          (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+        );
+        setProgress(progress);
+      },
+      (error) => {
+        throw error;
+      },
+      async () => {
+        const url = await getDownloadURL(uploadTask.snapshot.ref);
+        setUrl((prev) => {
+          return [...prev, url];
+        });
+      }
+    );
+
+    return { success: true };
+  } catch (error) {
+    setError(error);
+    return { error: error.message };
   }
 }
