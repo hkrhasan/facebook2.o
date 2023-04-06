@@ -56,14 +56,6 @@ export default function SignUpModal() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  function closeModal() {
-    setIsOpen(false);
-  }
-
-  function openModal() {
-    setIsOpen(true);
-  }
-
   function getYearOptions(currentYear) {
     const options = [];
 
@@ -115,6 +107,8 @@ export default function SignUpModal() {
 
   return (
     <Modal
+      isOpen={isOpen}
+      setIsOpen={setIsOpen}
       ModalController={SignupModalController}
       title="Sign Up"
       subtitle="It's quick and easy."

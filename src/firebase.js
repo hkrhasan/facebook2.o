@@ -108,8 +108,42 @@ export async function ResetPassword(email) {
   }
 }
 
-export async function uploadFile(file, setUrl, setError, setProgress) {
-  try {
+// export async function uploadFile(file, setUrl, setError, setProgress) {
+//   try {
+//     const storageRef = ref(
+//       storage,
+//       `posts/${new Date().valueOf()}-${file.name}`
+//     );
+//     const uploadTask = uploadBytesResumable(storageRef, file);
+
+//     uploadTask.on(
+//       "state_changed",
+//       (snapshot) => {
+//         const progress = Math.round(
+//           (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+//         );
+//         setProgress(progress);
+//       },
+//       (error) => {
+//         throw error;
+//       },
+//       async () => {
+//         const url = await getDownloadURL(uploadTask.snapshot.ref);
+//         setUrl((prev) => {
+//           return [...prev, url];
+//         });
+//       }
+//     );
+
+//     return { success: true };
+//   } catch (error) {
+//     setError(error);
+//     return { error: error.message };
+//   }
+// }
+
+export async function uploadFile(file) {
+  return await new Promise(async (resolve, reject) => {
     const storageRef = ref(
       storage,
       `posts/${new Date().valueOf()}-${file.name}`
@@ -119,25 +153,18 @@ export async function uploadFile(file, setUrl, setError, setProgress) {
     uploadTask.on(
       "state_changed",
       (snapshot) => {
-        const progress = Math.round(
-          (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-        );
-        setProgress(progress);
+        const progress =
+          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        // console.log("Upload is " + progress + "% done");
       },
       (error) => {
-        throw error;
+        console.error("Upload failed:", error);
+        reject(error);
       },
       async () => {
         const url = await getDownloadURL(uploadTask.snapshot.ref);
-        setUrl((prev) => {
-          return [...prev, url];
-        });
+        resolve(url);
       }
     );
-
-    return { success: true };
-  } catch (error) {
-    setError(error);
-    return { error: error.message };
-  }
+  });
 }

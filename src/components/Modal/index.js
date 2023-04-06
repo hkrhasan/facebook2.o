@@ -1,35 +1,27 @@
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment, useState } from "react";
 import { IoClose } from "react-icons/io5";
-import {HiArrowLeft} from "react-icons/hi";
 import clsx from "clsx";
 
 export default function Modal({
   ModalController,
   backgroundStyle,
   closeStyle,
+  isOpen,
+  setIsOpen,
   titleStyle,
   title,
   subtitle,
   subtitleStyle,
   titleContainerStyle,
-  diaSize,
   children,
-  postDialogue,
-  InVisible,
 }) {
-  let [isOpen, setIsOpen] = useState(false);
-  const defaultSize="max-w-md"
-
   function closeModal() {
     setIsOpen(false);
   }
 
   function openModal() {
     setIsOpen(true);
-  }
-  function arrowLeft(){
-    postDialogue()
   }
 
   return (
@@ -66,7 +58,7 @@ export default function Modal({
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
               >
-                <Dialog.Panel className={`relative w-full ${diaSize || defaultSize } transform overflow-hidden rounded-lg bg-white  text-left align-middle shadow-2xl transition-all`}>
+                <Dialog.Panel className="relative w-full max-w-lg transform overflow-hidden rounded-lg bg-white  text-left align-middle shadow-2xl transition-all">
                   <button
                     onClick={closeModal}
                     className={clsx(
@@ -76,14 +68,6 @@ export default function Modal({
                   >
                     <IoClose size={closeStyle?.size || 28} />
                   </button>
-                  <button onClick={arrowLeft}
-                    className={clsx(
-                      "absolute top-[10px] left-4",
-                      closeStyle?.className, {'hidden':InVisible}
-        
-                    )}>
-                      <HiArrowLeft size={closeStyle?.size || 28} />
-                    </button>
                   <div
                     className={clsx(
                       "grid gap-y-3 px-4 py-2",

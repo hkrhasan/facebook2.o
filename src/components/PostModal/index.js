@@ -25,8 +25,11 @@ import { Tooltip } from "..";
 import { render } from "@testing-library/react";
 import { SidebarRow } from "..";
 import { uploadFile } from "../../firebase";
+import { useSelector } from "react-redux";
+import { selectUser } from "../../store/reducers/user.reducer";
 
 export default function PostModal({ title }) {
+  const [isOpen, setIsOpen] = useState(false);
   const [MediaChange, setMediaChange] = useState(false);
   const [Active, setActive] = useState("");
   const [PostTitle, setPostTitle] = useState("");
@@ -55,6 +58,8 @@ export default function PostModal({ title }) {
       ModalController={({ onClick }) => (
         <PostModalController onClick={onClick} PostTitle={PostTitle} />
       )}
+      isOpen={isOpen}
+      setIsOpen={setIsOpen}
       title={Heading}
       titleStyle="text-xl text-center"
       diaSize="max-w-lg"
@@ -83,6 +88,7 @@ export default function PostModal({ title }) {
           Active={Active}
           setHeading={setHeading}
           UserDetails={UserDetails}
+          modelHandler={(value) => setIsOpen(value)}
         />
       </div>
     </Modal>
@@ -101,6 +107,7 @@ function MainBodyFunc({
   Active,
   setHeading,
   UserDetails,
+  modelHandler,
 }) {
   switch (NextDialogue) {
     case 1:
@@ -116,6 +123,7 @@ function MainBodyFunc({
           onClick={onClick}
           Active={Active}
           setHeading={setHeading}
+          modelHandler={modelHandler}
         />
       );
     case 2:
@@ -154,15 +162,14 @@ function CreatePostDialogue({
   PostTitle,
   onClick,
   Active,
+  modelHandler,
 }) {
   const ref = useRef(null);
+  const { user } = useSelector(selectUser);
   const [progress, setProgress] = useState(0);
   const [imgUrls, setImageUrls] = useState([]);
-
-  const [formData, setFormData] = useState({
-    postBody: "",
-    image: undefined,
-  });
+  const [bodyText, setBodyText] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   if (setNextDialogue) {
     // to back on front page
@@ -177,11 +184,30 @@ function CreatePostDialogue({
 
     if (!file) return;
 
-    await uploadFile(file, setImageUrls, (e) => {}, setProgress);
-    console.log("uploading end ...");
+    const url = await uploadFile(file);
+    setImageUrls([url]);
+    console.log("uploading end ...", url);
   };
 
-  console.log({ imgUrls, progress });
+  const onSubmit = async () => {
+    if (!imgUrls.length && !bodyText) return;
+    setIsSubmitting(true);
+
+    const { success, error, docId } = await addDocument("posts", {
+      bodyText,
+      images: imgUrls,
+      userId: user?.uid,
+    });
+
+    setIsSubmitting(false);
+
+    if (error) {
+      toast.error("something went wrong on creating post");
+      return;
+    }
+
+    modelHandler(false);
+  };
 
   return (
     <>
@@ -190,7 +216,7 @@ function CreatePostDialogue({
           <Avatar />
         </div>
         <div className="profile-des font-semibold">
-          <span>{title}</span>
+          <span>{user?.displayName}</span>
           <div className="flex items-center justify-around bg-zinc-300 rounded-md px-1 w-20 h-6 text-xs font-semibold">
             <div>
               <GiEarthAmerica />
@@ -204,24 +230,23 @@ function CreatePostDialogue({
       </div>
       <div
         className={clsx(
-          `h-full w-ful items-start flex flex-col gap-20  justify-center`,
-          { hidden: MediaChange === true, block: MediaChange === false }
+          `h-full w-ful items-start flex flex-col gap-20  justify-center`
         )}
       >
         <textarea
-          className="w-full h-50 resize-none focus:outline-none focus:shadow-none ring-transparent focus:ring-transparent border-transparent focus:border-transparent"
-          placeholder="What's on your mind, kapil?"
+          className="w-full resize-none focus:outline-none focus:shadow-none ring-transparent focus:ring-transparent border-transparent focus:border-transparent"
+          placeholder={`What's on your mind, ${user?.displayName}`}
           // value={PostTitle}
-          onClick={(e) => {
-            setPostTitle(e.target.value);
-          }}
+          onChange={(e) => setBodyText(e.target.value)}
         />
-        <div className=" w-full flex justify-between items-center">
-          <img src={Fontchange} className="w-10 h-auto" />
-          <div className="smiley-icon text-4xl text-gray-400">
-            <HiOutlineFaceSmile />
+        {!MediaChange && (
+          <div className=" w-full flex justify-between items-center">
+            <img src={Fontchange} className="w-10 h-auto" />
+            <div className="smiley-icon text-4xl text-gray-400">
+              <HiOutlineFaceSmile />
+            </div>
           </div>
-        </div>
+        )}
       </div>
 
       {/* For giving Scroll => wrapper div of textarea div and add-phots/videos div*/}
@@ -232,32 +257,12 @@ function CreatePostDialogue({
         })}
       >
         <div className="overflow-y-scroll h-60">
-          {/* Textarea and smile emoji div */}
-          <div className="post-des w-full flex items-center justify-between ">
-            <div className="mt-3">
-              <textarea
-                placeholder="What's on your mind, kapil?"
-                className="w-full resize-none focus:outline-none focus:shadow-none ring-transparent focus:ring-transparent border-transparent focus:border-transparent"
-                // value={PostTitle}
-                onClick={(e) => {
-                  setPostTitle(e.target.value);
-                }}
-              />
-              {console.log(PostTitle)}
-            </div>
-            <div className="smiley-icon text-2xl">
-              <HiOutlineFaceSmile />
-            </div>
-          </div>
           {/* Add photos/videos Div */}
           <div
             className={clsx(
               `border-2 rounded-md flex flex-col justify-between p-2 relative`,
               { hidden: MediaChange === false }
             )}
-            onClick={(e) => {
-              ref.current?.click();
-            }}
           >
             <div
               className="absolute top-4 right-4 kapil p-1 cursor-pointer"
@@ -265,12 +270,21 @@ function CreatePostDialogue({
             >
               <RxCross2 className="text-xl" onClick={onClick} />
             </div>
-            <div className="bg-gray-200 pt-50 pb-20 rounded ">
-              <div className="flex flex-col items-center justify-center  mt-16">
-                <BiPhotoAlbum className="text-5xl bg-zinc-300 rounded-full p-2" />
-                <p className="text-lg font-medium">Add Photos/Videos</p>
-                <p>or drag and drops</p>
-              </div>
+            <div
+              onClick={(e) => {
+                ref.current?.click();
+              }}
+              className="bg-gray-200 rounded flex items-center justify-center h-52"
+            >
+              {imgUrls.length ? (
+                <img src={imgUrls[0]} className="h-full w-full" />
+              ) : (
+                <div className="flex flex-col items-center justify-center">
+                  <BiPhotoAlbum className="text-5xl bg-zinc-300 rounded-full p-2" />
+                  <p className="text-lg font-medium">Add Photos/Videos</p>
+                  <p>or drag and drops</p>
+                </div>
+              )}
             </div>
             <div className="flex justify-between items-center mt-2  bg-gray-200 rounded p-2">
               <div className="border-2 rounded-full bg-zinc-300 text-3xl p-1">
@@ -327,8 +341,11 @@ function CreatePostDialogue({
         </div>
       </div>
 
-      <button className="bg-blue-600 w-full rounded-md text-white p-2 mt-4 mb-4">
-        Post
+      <button
+        onClick={onSubmit}
+        className="bg-blue-600 w-full rounded-md text-white p-2 mt-4 mb-4"
+      >
+        {isSubmitting ? "Submitting..." : "Post"}
       </button>
     </>
   );
@@ -400,13 +417,14 @@ function FeelingsDialogue({
 }
 
 function PostModalController({ onClick, PostTitle }) {
+  const { user } = useSelector(selectUser);
+
   return (
-    <div onClick={onClick}>
-      <textarea
-        placeholder="What's on your mind,kapil?"
-        className=" w-full h-100 resize-none focus:outline-none focus:shadow-none ring-transparent focus:ring-transparent border-transparent focus:border-transparent"
-        value={PostTitle}
-      />
+    <div
+      onClick={onClick}
+      className="rounded-full bg-[#f0f2f5] px-3 py-2 hover:bg-[#e1e0e0] w-full"
+    >
+      <p>What's on your mind, {user?.displayName}?</p>
     </div>
   );
 }
