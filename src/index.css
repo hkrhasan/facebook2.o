@@ -12,3 +12,7 @@
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
 }
+
+.flex-i-center {
+  @apply flex items-center;
+}
