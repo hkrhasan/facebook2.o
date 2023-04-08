@@ -232,6 +232,7 @@ function HomePage() {
         setFeedPosts(postWithAuthors);
       }
     });
+    console.log("code updated");
   }, [user]);
 
   const heightAndScroll = "h-[calc(100vh-4rem)] overflow-y-scroll pb-2";
