@@ -9,6 +9,9 @@ import {
   setDoc,
   getDoc,
   doc,
+  query,
+  where,
+  getDocs,
 } from "firebase/firestore";
 import {
   getAuth,
@@ -108,40 +111,6 @@ export async function ResetPassword(email) {
   }
 }
 
-// export async function uploadFile(file, setUrl, setError, setProgress) {
-//   try {
-//     const storageRef = ref(
-//       storage,
-//       `posts/${new Date().valueOf()}-${file.name}`
-//     );
-//     const uploadTask = uploadBytesResumable(storageRef, file);
-
-//     uploadTask.on(
-//       "state_changed",
-//       (snapshot) => {
-//         const progress = Math.round(
-//           (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-//         );
-//         setProgress(progress);
-//       },
-//       (error) => {
-//         throw error;
-//       },
-//       async () => {
-//         const url = await getDownloadURL(uploadTask.snapshot.ref);
-//         setUrl((prev) => {
-//           return [...prev, url];
-//         });
-//       }
-//     );
-
-//     return { success: true };
-//   } catch (error) {
-//     setError(error);
-//     return { error: error.message };
-//   }
-// }
-
 export async function uploadFile(file) {
   return await new Promise(async (resolve, reject) => {
     const storageRef = ref(
@@ -167,4 +136,44 @@ export async function uploadFile(file) {
       }
     );
   });
+}
+
+export async function getDocuments(collectionName) {
+  try {
+    const q = query(collection(db, collectionName));
+
+    const querySnapshot = await getDocs(q);
+
+    const data = [];
+
+    querySnapshot.forEach((doc) => {
+      data.push({
+        docId: doc.id,
+        ...doc.data(),
+      });
+    });
+
+    return { success: true, data };
+  } catch (error) {
+    return { error: error.message };
+  }
+}
+
+export async function getDocument(collectionName, docId) {
+  try {
+    const docRef = doc(db, collectionName, docId);
+    const document = await getDoc(docRef);
+
+    if (!document.exists) {
+      throw new Error("not found");
+    }
+
+    const data = {
+      docId: document.id,
+      ...document.data(),
+    };
+    return { success: true, data };
+  } catch (error) {
+    return { error: error.message };
+  }
 }

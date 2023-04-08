@@ -1,31 +1,17 @@
-import React, {
-  Component,
-  PureComponent,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
-import useAuth from "../../hooks/useAuth";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Avatar,
   Header,
   SidebarRow,
-  TabBar,
   WhiteBox,
   StoryController,
   PostController,
   SidebarHeadingRow,
-  PreLoader,
   ThreeDotsIcon,
 } from "../../components";
 import avatar from "../../assets/profile.jpeg";
-import {
-  SET_USER,
-  LOGOUT,
-  SET_LOADING,
-  selectUser,
-} from "../../store/reducers/user.reducer";
+import { selectUser } from "../../store/reducers/user.reducer";
 
 import {
   Friends,
@@ -34,7 +20,7 @@ import {
   MostRecent,
   Watch,
 } from "../../assets/facebookicons";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import AuthPage from "../AuthPage";
 import clsx from "clsx";
 import { GiEarthAmerica } from "react-icons/gi";
@@ -42,6 +28,7 @@ import { BsDot } from "react-icons/bs";
 import { AiFillLike, AiOutlineLike } from "react-icons/ai";
 import { GoComment } from "react-icons/go";
 import { TbShare3 } from "react-icons/tb";
+import { getDocument, getDocuments } from "../../firebase";
 
 const leftSideBarMenus = [
   {
@@ -200,6 +187,7 @@ function HomePage() {
   const [sideBarMenus, setSideBarMenus] = useState(leftSideBarMenus);
   const navigate = useNavigate();
   const { user, isLoading } = useSelector(selectUser);
+  const [feedPosts, setFeedPosts] = useState([]);
 
   useEffect(() => {
     const withoutProfileMenus = sideBarMenus.filter(
@@ -217,9 +205,34 @@ function HomePage() {
         ...withoutProfileMenus,
       ]);
     }
-  }, [user]);
 
-  // if (isLoading) return <PreLoader />;
+    getDocuments("posts").then(async ({ success, data, error }) => {
+      if (data) {
+        // Get unique author IDs
+        const uniqueAuthorIds = [...new Set(data.map((post) => post.userId))];
+
+        const authorDocs = await Promise.all(
+          uniqueAuthorIds.map((authorId) => getDocument("user1", authorId))
+        );
+
+        const authors = Object.fromEntries(
+          authorDocs.map((doc) => [doc.data.docId, doc.data])
+        );
+
+        const postWithAuthors = data.map((post) => {
+          return {
+            ...post,
+            authorName: `${authors[post.userId]?.firstName} ${
+              authors[post.userId]?.surName
+            }`,
+            authorImage: authors[post.userId]?.image,
+          };
+        });
+
+        setFeedPosts(postWithAuthors);
+      }
+    });
+  }, [user]);
 
   const heightAndScroll = "h-[calc(100vh-4rem)] overflow-y-scroll pb-2";
 
@@ -248,11 +261,9 @@ function HomePage() {
             <div className="grid gap-y-5 w-[700px]">
               <StoryController />
               <PostController />
-              <PostCard />
-              <PostCard />
-              <PostCard />
-              <PostCard />
-              <PostCard />
+              {feedPosts.map((post) => (
+                <PostCard {...post} />
+              ))}
             </div>
           </div>
           {/* Right col */}
@@ -267,15 +278,15 @@ function HomePage() {
 
 export default HomePage;
 
-function PostCard() {
+function PostCard({ authorName, authorImage, bodyText, images }) {
   return (
     <WhiteBox>
       <div>
         <div className="flex-i-center justify-between px-3 py-2">
           <div className="flex-i-center gap-x-2">
-            <Avatar />
+            <Avatar src={authorImage} />
             <div>
-              <p className="text-sm font-bold">Hkrhasan</p>
+              <p className="text-sm font-bold">{authorName}</p>
               <div className="flex-i-center gap-x-1 text-sm font-light text-gray-500">
                 <p className="">1 h</p>
                 <BsDot />
@@ -289,10 +300,10 @@ function PostCard() {
         </div>
         <div>
           <div className="px-3 py-2 text-lg">
-            <p>this is body text</p>
+            <p>{bodyText}</p>
           </div>
           <div>
-            <img src={avatar} />
+            <img src={images[0]} />
           </div>
         </div>
         <div className="flex-i-center justify-between py-3 px-3">
