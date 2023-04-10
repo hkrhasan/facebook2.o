@@ -6,9 +6,9 @@ function SidebarRow({ img, title, as }) {
   return (
     <div className="flex items-center w-full hover:bg-gray-200 py-2 rounded-md px-2 cursor-pointer gap-x-4">
       {as === "profile" ? (
-        <Avatar src={img} width="40px" />
+        <Avatar src={img} width="40px" className="hidden lg:block" />
       ) : (
-        <div>
+        <div className="hidden lg:block">
           <img src={img} width="40px" />
         </div>
       )}

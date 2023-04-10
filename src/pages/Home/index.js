@@ -242,11 +242,11 @@ function HomePage() {
       <div className="h-screen w-full bg-[#f0f2f5] overflow-hidden">
         <Header />
         <main
-          className="px-3 py-4 grid gap-x-24 items-start h-[calc(100vh-4rem)]"
-          style={{ gridTemplateColumns: "300px auto 300px" }}
+          className="px-3 py-4 grid items-start h-[calc(100vh-4rem)] gap-x-2 md:grid-cols-[minmax(500px,_1fr)_200px] lg:grid-cols-[300px_minmax(700px,_1fr)_300px]"
+          // style={{ gridTemplateColumns: "300px auto 300px" }}
         >
           {/* Left col */}
-          <div className={clsx(heightAndScroll)}>
+          <div className={clsx(heightAndScroll, "hidden lg:block")}>
             {sideBarMenus.map((menu) => (
               <SidebarRow key={`left-side-menu-${menu.id}`} {...menu} />
             ))}
@@ -254,12 +254,12 @@ function HomePage() {
           {/* Mid col */}
           <div
             className={clsx(
-              "grid justify-center items-start",
+              "grid justify-center items-start max-w-[470px] sm:max-w-[700px] place-self-center",
               heightAndScroll,
               "hide-scrollbar"
             )}
           >
-            <div className="grid gap-y-5 w-[700px]">
+            <div className="grid gap-y-5">
               <StoryController />
               <PostController />
               {feedPosts.map((post) => (
@@ -268,7 +268,7 @@ function HomePage() {
             </div>
           </div>
           {/* Right col */}
-          <div className={clsx(heightAndScroll)}>
+          <div className={clsx(heightAndScroll, "hidden md:block")}>
             <SidebarHeadingRow title="Your Pages and profiles" />
           </div>
         </main>

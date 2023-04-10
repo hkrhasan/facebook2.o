@@ -46,10 +46,10 @@ function StoryController() {
           onTabClick={(tab) => setTab(tab)}
         />
       </div>
-      <div className="py-5 relative">
+      <div className="py-5 relative max-w-[470px] sm:max-w-[680px] lg:max-w-[700px]">
         <div
           ref={topRowRef}
-          className="flex w-[700px] items-center gap-x-3 overflow-x-scroll hide-scrollbar px-4 scroll-smooth"
+          className="flex max-w-[470px] sm:max-w-[680px] lg:max-w-[700px] items-center gap-x-3 overflow-x-scroll hide-scrollbar px-4 scroll-smooth"
         >
           <StoryCard img={testImage} />
           <StoryCard img={testImage} />
