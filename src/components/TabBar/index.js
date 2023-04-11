@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import clsx from "clsx";
 import { Tooltip } from "..";
+import { Link } from "react-router-dom";
 
 export default class TabBar extends Component {
   render() {
@@ -14,6 +15,7 @@ export default class TabBar extends Component {
             onClick={() => this.props.onTabClick(tab)}
             disableTooltip={this.props.disableTooltip}
             displayTitle={this.props.displayTitle}
+            controlFromNavigation={this.props.controlFromNavigation}
           />
         ))}
       </div>
@@ -25,15 +27,17 @@ function Tab({
   id,
   title,
   Icon,
+  url,
   active,
   onClick,
   disableTooltip,
   displayTitle,
+  controlFromNavigation,
 }) {
-  const content = (
+  let content = (
     <div
       className="relative md:min-w-[90px] w-full cursor-pointer"
-      onClick={onClick}
+      onClick={controlFromNavigation ? () => {} : onClick}
     >
       <div
         className={clsx(
@@ -57,6 +61,14 @@ function Tab({
       ) : null}
     </div>
   );
+
+  if (url) {
+    content = (
+      <Link className="md:min-w-[90px] w-full" to={url}>
+        {content}
+      </Link>
+    );
+  }
 
   if (disableTooltip) {
     return content;

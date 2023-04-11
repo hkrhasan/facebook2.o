@@ -9,6 +9,7 @@ import {
   PostController,
   SidebarHeadingRow,
   ThreeDotsIcon,
+  Contact,
 } from "../../components";
 import avatar from "../../assets/profile.jpeg";
 import { selectUser } from "../../store/reducers/user.reducer";
@@ -270,6 +271,7 @@ function HomePage() {
           {/* Right col */}
           <div className={clsx(heightAndScroll, "hidden md:block")}>
             <SidebarHeadingRow title="Your Pages and profiles" />
+            <Contact />
           </div>
         </main>
       </div>
