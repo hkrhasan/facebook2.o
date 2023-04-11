@@ -101,7 +101,7 @@ const Friends = () => {
             <div className="">
               <p className=" text-xl font-bold">People You May Know</p>
             </div>
-            <div className="grid gap-6 md:grid-cols-[minmax(300px,_1fr)_minmax(300px,_1fr)] lg:grid-cols-[minmax(300px,_1fr)_minmax(300px,_1fr)_minmax(300px,_1fr)] xl:grid-cols-[minmax(300px,_1fr)_minmax(300px,_1fr)_minmax(300px,_1fr)_minmax(300px,_1fr)]">
+            <div className="grid gap-6 sm:grid-cols-[repeat(2, minmax(300px,_1fr))] md:grid-cols-[repeat(3,minmax(300px,_1fr))] lg:grid-cols-[repeat(4,minmax(300px,_1fr))]">
               <AddFriendsCard />
               <AddFriendsCard />
               <AddFriendsCard />
