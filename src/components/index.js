@@ -19,3 +19,6 @@ export { default as UserMenuAvatar } from "./UserMenuAvatar";
 export { default as PostModal } from "./PostModal";
 export { default as Modal } from "./Modal";
 export { default as ThreeDotsIcon } from "./ThreeDotsIcon";
+export { default as FriendsCard} from "./FriendsCard"
+export { default as Contact} from "./Contact"
+
