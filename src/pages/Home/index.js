@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate} from "react-router-dom";
 import {
   Avatar,
   Header,
@@ -9,9 +9,14 @@ import {
   PostController,
   SidebarHeadingRow,
   ThreeDotsIcon,
+  Contact,
 } from "../../components";
 import avatar from "../../assets/profile.jpeg";
 import { selectUser } from "../../store/reducers/user.reducer";
+
+
+
+
 
 import {
   Friends,
@@ -184,10 +189,14 @@ const leftSideBarMenus = [
 ];
 
 function HomePage() {
+
+ 
   const [sideBarMenus, setSideBarMenus] = useState(leftSideBarMenus);
   const navigate = useNavigate();
   const { user, isLoading } = useSelector(selectUser);
   const [feedPosts, setFeedPosts] = useState([]);
+
+  
 
   useEffect(() => {
     const withoutProfileMenus = sideBarMenus.filter(
@@ -248,7 +257,9 @@ function HomePage() {
           {/* Left col */}
           <div className={clsx(heightAndScroll, "hidden lg:block")}>
             {sideBarMenus.map((menu) => (
-              <SidebarRow key={`left-side-menu-${menu.id}`} {...menu} />
+              <SidebarRow key={`left-side-menu-${menu.id}`} 
+              
+              {...menu} />
             ))}
           </div>
           {/* Mid col */}
@@ -270,6 +281,7 @@ function HomePage() {
           {/* Right col */}
           <div className={clsx(heightAndScroll, "hidden md:block")}>
             <SidebarHeadingRow title="Your Pages and profiles" />
+            <Contact/>
           </div>
         </main>
       </div>
