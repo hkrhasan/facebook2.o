@@ -16,3 +16,7 @@
 .flex-i-center {
   @apply flex items-center;
 }
+
+.body-height {
+  @apply h-[calc(100vh-4rem)] overflow-y-scroll pb-2;
+}
