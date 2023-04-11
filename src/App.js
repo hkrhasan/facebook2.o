@@ -1,7 +1,6 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
-import { ForgotPassword, Friends, HomePage, LoginPage ,Profile} from "./pages";
-
+import { ForgotPassword, Friends, HomePage, LoginPage, Profile } from "./pages";
 
 const router = createBrowserRouter([
   {
@@ -17,13 +16,12 @@ const router = createBrowserRouter([
     element: <ForgotPassword />,
   },
   {
-
     path: "/profile",
     element: <Profile />,
-
+  },
+  {
     path: "/friends",
-    element: <Friends/>,
-
+    element: <Friends />,
   },
 ]);
 
