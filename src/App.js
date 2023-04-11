@@ -1,5 +1,5 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { ForgotPassword, HomePage, LoginPage } from "./pages";
+import { ForgotPassword, HomePage, LoginPage, Profile } from "./pages";
 
 const router = createBrowserRouter([
   {
@@ -13,6 +13,10 @@ const router = createBrowserRouter([
   {
     path: "/forgot-password",
     element: <ForgotPassword />,
+  },
+  {
+    path: "/profile",
+    element: <Profile />,
   },
 ]);
 
